@@ -5,10 +5,28 @@ $(document).ready(function () {
 
 });
 
-var JUMP_TOTAL_FRAMES = 30;
+var JUMP_TOTAL_FRAMES = 60;
 var FRAMES_FOR_SPRITE_CHANGE = 4;
 
-var context, drawingCanvas, chara, rafTimer, background;
+var context, drawingCanvas, chara, rafTimer, background, gameStatus;
+
+var enemy_type_goomba = {
+    "image": "img/goomba.png",
+    "mtth": 10 //segundos
+}
+
+var sound_effects = {
+    "pause": "sounds/pause.wav",
+    "jump": "sounds/jump.wav"
+}
+
+var playable_sound_effects = {};
+
+function createSoundEffects() {
+
+    for (var effect in sound_effects)
+        playable_sound_effects[effect] = createAudio(sound_effects[effect], effect);
+}
 
 function createChara() {
 
@@ -67,11 +85,13 @@ function start() {
     context = drawingCanvas.getContext("2d");
 
     createChara();
-    //  createBackground();
+    createSoundEffects();
 
     chara.image.onload = function () {
         drawThing(chara);
     }
+
+    gameStatus = "play";
 
 //    background.image.onload = function () {
 //        drawThing(background);
@@ -98,7 +118,7 @@ function start() {
 }
 
 function clearThing(thing) {
-    context.clearRect(thing.x, thing.y-5, thing.width + 1, thing.height + 10);
+    context.clearRect(thing.x, thing.y - 5, thing.width + 1, thing.height + 10);
 
 }
 ;
@@ -117,29 +137,57 @@ function drawThing(thing) {
     //thing.sizeX, thing.sizeY);
 
 }
-;
+
+function createAudio(url, name) {
+    var audio = document.createElement('audio');
+    //console.log('cargando "' + src + '"');
+    audio.src = url;
+    audio.preload = 'auto';
+    return audio;
+}
+
+
+function playSoundEffect(sound) {
+    var effect = playable_sound_effects[sound];
+//    effect.loop=false;
+    console.debug(effect);
+    effect.play();
+}
+
+function regenSoundEffect(sound) {
+    playable_sound_effects[sound] = createAudio(sound_effects[sound], sound);
+}
 
 function lookForEvents() {
     var self = this;
     $(document).on('keyup', function (e) {
         e.preventDefault();
-        if (self.chara.status != "")
+
+        if (e.which == 13)//enter--pause
         {
-            return;
+            if (gameStatus == "play")
+            {
+                gameStatus = "pause";
+                playSoundEffect("pause");
+
+
+            }
+            else
+            {
+                gameStatus = "play";
+                regenSoundEffect("pause");
+            }
         }
-        if (e.which == 32) {
 
-//                   var index = Math.round(Math.random() * (self.swimmingSounds.length - 1));
-//                    self.swimmingSounds[index].play();
+        if (self.chara.status == "" && gameStatus == "play")
+        {
 
+            if (e.which == 32) {
 
-            self.chara.status = "jumping";
-            self.chara.frames = 1;
+                self.chara.status = "jumping";
+                self.chara.frames = 1;
 
-            /*if (self.guy.phrase.alpha == 0) {
-             self.guy.phrase.alpha = 1;
-             self.guy.phrase.scale = 0;
-             }*/
+            }
         }
     }
     );
@@ -147,12 +195,14 @@ function lookForEvents() {
 
 
 function update() {
-
-    recalcChara();
-    if (chara.status != "")
+    if (gameStatus == "play")
     {
-        clearChara();
-        paintChara();
+        recalcChara();
+        if (chara.status != "")
+        {
+            clearChara();
+            paintChara();
+        }
     }
 }
 
@@ -202,7 +252,9 @@ function run(thing) {
 
 function jump(thing) {
 
-    thing.sx=0;
+    if (thing.frames == 1)
+        playSoundEffect("jump");
+    thing.sx = 0;
     if (thing.frames <= JUMP_TOTAL_FRAMES / 2)
     {
         thing.y -= 1;
@@ -218,11 +270,15 @@ function jump(thing) {
     {
         thing.status = "";
         thing.frames = 1;
+        regenSoundEffect("jump");
     }
     else
     {
         thing.frames++;
     }
+
+
+
 
 }
 

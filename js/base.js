@@ -5,7 +5,8 @@ $(document).ready(function () {
 
 });
 
-var JUMP_TOTAL_FRAMES=30;
+var JUMP_TOTAL_FRAMES = 30;
+var FRAMES_FOR_SPRITE_CHANGE = 4;
 
 var context, drawingCanvas, chara, rafTimer, background;
 
@@ -13,15 +14,21 @@ function createChara() {
 
     var charaImage = new Image();
 
-    charaImage.src = "img/chara.png";
+    charaImage.src = "img/sonic.png";
 
     chara = {
-        sizeX: 10,
-        sizeY: 10,
+        sx: 0,
+        sy: 0,
         x: 20,
         y: 61,
+        sheight: 30,
+        swidth: 24,
+        height: 30,
+        width: 24,
+        totalWidth: 24*7,
         image: charaImage,
-        status: ""
+        status: "",
+        frames: 0
     };
 
 }
@@ -51,7 +58,7 @@ function start() {
     context = drawingCanvas.getContext("2d");
 
     createChara();
-  //  createBackground();
+    //  createBackground();
 
     chara.image.onload = function () {
         drawThing(chara);
@@ -82,7 +89,7 @@ function start() {
 }
 
 function clearThing(thing) {
-    context.clearRect(thing.x, thing.y, thing.sizeX, thing.sizeY);
+    context.clearRect(thing.x, thing.y, thing.width, thing.height);
 
 }
 ;
@@ -95,7 +102,10 @@ function drawThing(thing) {
 //    context.fillRect(0, 0, canvas.width, canvas.height);
 //    context.fill();
 
-    context.drawImage(thing.image, thing.x, thing.y, thing.sizeX, thing.sizeY);
+    context.drawImage(thing.image,thing.sx,thing.sy,thing.swidth,thing.sheight,thing.x,thing.y,thing.width,thing.height);
+    
+    //, thing.x, thing.y, thing.width, thing.height);
+    //thing.sizeX, thing.sizeY);
 
 }
 ;
@@ -128,13 +138,13 @@ function lookForEvents() {
 
 
 function update() {
-    clearChara();
+    
     recalcChara();
-
-
-
-//    drawThing(background);
-    paintChara();
+    if (chara.status != "")
+    {
+        clearChara();
+        paintChara();
+    }
 }
 
 function paintChara() {
@@ -149,7 +159,10 @@ function recalcChara() {
     switch (chara.status)
     {
         case "":
-            return;
+        case "running":
+            
+            run(chara);
+            break;
 
         case "jumping":
             jump(chara);
@@ -162,9 +175,24 @@ function recalcChara() {
     }
 }
 
+
+function run(thing) {
+    if(thing.frames == FRAMES_FOR_SPRITE_CHANGE)
+    {
+        thing.sx = ( thing.sx + thing.swidth) % thing.totalWidth;
+        thing.status = "running";
+        thing.frames = 0;
+    }
+    else
+    {
+        thing.status = "";
+        thing.frames+=1;
+    }
+}
+
 function jump(thing) {
 
-    if (thing.frames <= JUMP_TOTAL_FRAMES/2)
+    if (thing.frames <= JUMP_TOTAL_FRAMES / 2)
     {
         thing.y -= 1;
     }
@@ -175,7 +203,7 @@ function jump(thing) {
             thing.y += 1;
         }
     }
-    if(thing.frames == JUMP_TOTAL_FRAMES)
+    if (thing.frames == JUMP_TOTAL_FRAMES)
     {
         thing.status = "";
         thing.frames = 1;
@@ -245,4 +273,6 @@ var Timer = function (update, rate, thisArg) {
     }
 
 };
+
+
 

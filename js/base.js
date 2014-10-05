@@ -20,12 +20,21 @@ function createChara() {
         sx: 0,
         sy: 0,
         x: 20,
-        y: 61,
+        y: 53,
         sheight: 30,
         swidth: 24,
-        height: 30,
-        width: 24,
-        totalWidth: 24*7,
+        height: 15,
+        width: 12,
+        rows: {
+            "": 0,
+            "running": 0,
+            "jumping": 1
+        },
+        totalWidth: {
+            "": 24 * 7,
+            "running": 24 * 7,
+            "jumping": 24
+        },
         image: charaImage,
         status: "",
         frames: 0
@@ -89,7 +98,7 @@ function start() {
 }
 
 function clearThing(thing) {
-    context.clearRect(thing.x, thing.y, thing.width, thing.height);
+    context.clearRect(thing.x, thing.y-5, thing.width + 1, thing.height + 10);
 
 }
 ;
@@ -102,8 +111,8 @@ function drawThing(thing) {
 //    context.fillRect(0, 0, canvas.width, canvas.height);
 //    context.fill();
 
-    context.drawImage(thing.image,thing.sx,thing.sy,thing.swidth,thing.sheight,thing.x,thing.y,thing.width,thing.height);
-    
+    context.drawImage(thing.image, thing.sx, thing.sy, thing.swidth, thing.sheight, thing.x, thing.y, thing.width, thing.height);
+
     //, thing.x, thing.y, thing.width, thing.height);
     //thing.sizeX, thing.sizeY);
 
@@ -138,7 +147,7 @@ function lookForEvents() {
 
 
 function update() {
-    
+
     recalcChara();
     if (chara.status != "")
     {
@@ -160,7 +169,7 @@ function recalcChara() {
     {
         case "":
         case "running":
-            
+
             run(chara);
             break;
 
@@ -173,25 +182,27 @@ function recalcChara() {
 
 
     }
+    chara.sy = chara.rows[chara.status] * chara.sheight;
 }
 
 
 function run(thing) {
-    if(thing.frames == FRAMES_FOR_SPRITE_CHANGE)
+    if (thing.frames == FRAMES_FOR_SPRITE_CHANGE)
     {
-        thing.sx = ( thing.sx + thing.swidth) % thing.totalWidth;
+        thing.sx = (thing.sx + thing.swidth) % thing.totalWidth[thing.status];
         thing.status = "running";
         thing.frames = 0;
     }
     else
     {
         thing.status = "";
-        thing.frames+=1;
+        thing.frames += 1;
     }
 }
 
 function jump(thing) {
 
+    thing.sx=0;
     if (thing.frames <= JUMP_TOTAL_FRAMES / 2)
     {
         thing.y -= 1;

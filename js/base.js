@@ -37,12 +37,12 @@ function createChara() {
     chara = {
         sx: 0,
         sy: 0,
-        x: 20,
-        y: 53,
+        x: 120,
+        y: 388,
         sheight: 30,
         swidth: 24,
-        height: 15,
-        width: 12,
+        height: 60,
+        width: 48,
         rows: {
             "": 0,
             "running": 0,
@@ -60,20 +60,6 @@ function createChara() {
 
 }
 
-function createBackground() {
-    var charaImage = new Image();
-
-    charaImage.src = "img/mario_bg.jpg";
-
-    background = {
-        sizeX: 127,
-        sizeY: 63,
-        x: 0,
-        y: 0,
-        image: charaImage
-    };
-}
-
 
 
 function start() {
@@ -83,6 +69,13 @@ function start() {
     events = [];
 
     context = drawingCanvas.getContext("2d");
+    
+
+drawingCanvas.width        = window.innerWidth;
+drawingCanvas.height       = window.innerHeight;
+drawingCanvas.style.width  = drawingCanvas.width.toString() + "px";
+drawingCanvas.style.height = drawingCanvas.height.toString() + "px";
+
 
     createChara();
     createSoundEffects();
@@ -197,6 +190,7 @@ function lookForEvents() {
 function update() {
     if (gameStatus == "play")
     {
+
         recalcChara();
         if (chara.status != "")
         {
@@ -257,13 +251,13 @@ function jump(thing) {
     thing.sx = 0;
     if (thing.frames <= JUMP_TOTAL_FRAMES / 2)
     {
-        thing.y -= 1;
+        thing.y -= 2;
     }
     else
     {
         if (thing.frames <= JUMP_TOTAL_FRAMES)
         {
-            thing.y += 1;
+            thing.y += 2;
         }
     }
     if (thing.frames == JUMP_TOTAL_FRAMES)

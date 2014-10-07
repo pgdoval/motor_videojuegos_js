@@ -15,6 +15,10 @@ var enemy_type_goomba = {
     "mtth": 10 //segundos
 }
 
+var music = {
+    url: "sounds/theme.mp3"
+}
+
 var sound_effects = {
     "pause": "sounds/pause.wav",
     "jump": "sounds/jump.wav"
@@ -25,7 +29,7 @@ var playable_sound_effects = {};
 function createSoundEffects() {
 
     for (var effect in sound_effects)
-        playable_sound_effects[effect] = createAudio(sound_effects[effect], effect);
+        playable_sound_effects[effect] = createAudio(sound_effects[effect], effect, false);
 }
 
 function createChara() {
@@ -79,6 +83,8 @@ function start() {
 
     createChara();
     createSoundEffects();
+    music.object= createAudio(music.url,"",true);
+    music.object.play();
 
     chara.image.onload = function () {
         drawThing(chara);
@@ -131,11 +137,12 @@ function drawThing(thing) {
 
 }
 
-function createAudio(url, name) {
+function createAudio(url, name, loopable) {
     var audio = document.createElement('audio');
     //console.log('cargando "' + src + '"');
     audio.src = url;
     audio.preload = 'auto';
+    audio.loop = loopable;
     return audio;
 }
 
@@ -160,7 +167,7 @@ function playSoundEffect(sound) {
 }
 
 function regenSoundEffect(sound) {
-    playable_sound_effects[sound] = createAudio(sound_effects[sound], sound);
+    playable_sound_effects[sound] = createAudio(sound_effects[sound], sound, false);
 }
 
 function lookForEvents() {
@@ -175,7 +182,7 @@ function lookForEvents() {
                 gameStatus = "pause";
                 playSoundEffect("pause");
                 showMessage("PAUSE",300,250,50);
-
+                music.object.pause();
 
             }
             else
@@ -184,6 +191,8 @@ function lookForEvents() {
                 regenSoundEffect("pause");
                 context.clearRect(0,0,drawingCanvas.width,drawingCanvas.height);
                 repaint();
+                music.object.loop=true;
+                music.object.play();
             }
         }
 

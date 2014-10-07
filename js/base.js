@@ -69,12 +69,12 @@ function start() {
     events = [];
 
     context = drawingCanvas.getContext("2d");
-    
 
-drawingCanvas.width        = window.innerWidth;
-drawingCanvas.height       = window.innerHeight;
-drawingCanvas.style.width  = drawingCanvas.width.toString() + "px";
-drawingCanvas.style.height = drawingCanvas.height.toString() + "px";
+
+    drawingCanvas.width = window.innerWidth;
+    drawingCanvas.height = window.innerHeight;
+    drawingCanvas.style.width = drawingCanvas.width.toString() + "px";
+    drawingCanvas.style.height = drawingCanvas.height.toString() + "px";
 
 
     createChara();
@@ -139,6 +139,18 @@ function createAudio(url, name) {
     return audio;
 }
 
+function showMessage(message, x, y, size) {
+    context.font = size+"px Arial";
+    var gradient = context.createLinearGradient(0, 0, drawingCanvas.width, 0);
+    gradient.addColorStop("0", "magenta");
+    gradient.addColorStop("0.5", "blue");
+    gradient.addColorStop("1.0", "red");
+// Fill with gradient
+    context.fillStyle = gradient;
+    context.fillText(message, x, y);
+
+
+}
 
 function playSoundEffect(sound) {
     var effect = playable_sound_effects[sound];
@@ -162,6 +174,7 @@ function lookForEvents() {
             {
                 gameStatus = "pause";
                 playSoundEffect("pause");
+                showMessage("PAUSE",300,250,50);
 
 
             }
@@ -169,6 +182,8 @@ function lookForEvents() {
             {
                 gameStatus = "play";
                 regenSoundEffect("pause");
+                context.clearRect(0,0,drawingCanvas.width,drawingCanvas.height);
+                repaint();
             }
         }
 
@@ -198,6 +213,10 @@ function update() {
             paintChara();
         }
     }
+}
+
+function repaint(){
+    paintChara();
 }
 
 function paintChara() {

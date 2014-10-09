@@ -73,11 +73,11 @@ var Juego2 = Base.extend({
             sx: 0,
             sy: 0,
             x: 120,
-            y: 230,
+            y: 117,
             sheight: 2592,
             swidth: 1456,
-            height: 256,
-            width: 146,
+            height: 384,
+            width: 219,
             rows: {
                 "": 0,
                 "standing": 0,
@@ -85,7 +85,7 @@ var Juego2 = Base.extend({
             },
             totalWidth: {
                 "": 1456 * 4,
-                "running": 1456 * 4,
+                "standing": 1456 * 4,
                 "hitting": 1456 * 5
             },
             image: charaImage,
@@ -99,12 +99,12 @@ var Juego2 = Base.extend({
         this.enemy = {
             sx: 0,
             sy: 0,
-            x: 570,
-            y: 240,
+            x: 500,
+            y: 135,
             sheight: 2592,
             swidth: 1456,
-            height: 256,
-            width: 146,
+            height: 384,
+            width: 219,
             rows: {
                 "": 0,
                 "standing": 0

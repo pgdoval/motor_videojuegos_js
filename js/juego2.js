@@ -1,127 +1,71 @@
 
 
 var Juego2 = Base.extend({
-    FRAMES_FOR_HIT_SPRITE_CHANGE: 8,
-    HIT_SPRITE_LENGTH: 5,
-    music: {
+    CICLOS_PARA_CAMBIO_DE_SPRITE_EN_GOLPEO: 5,
+    NUMERO_IMAGENES_GOLPEO: 5,
+    musica: {
         url: "sounds/theme.wav"
     },
-    sound_effects: {
-        "pause": "sounds/pause.wav",
-        "jump": "sounds/jump.wav"
-    },
-    sleep: function (milliseconds) {
-        var start = new Date().getTime();
-        for (var i = 0; i < 1e7; i++) {
-            if ((new Date().getTime() - start) > milliseconds) {
-
-                break;
-            }
-        }
-    },
-    clearAndPrint: function (i, messages) {
-        var self = this;
-        var intro_wait = 1000;
-
-        if (i < 3)
-            window.setTimeout(function () {
-                self.clearScreen();
-                console.debug(new Date().getTime());
-                self.showMessage(messages[i], 350, 200, 100);
-                self.clearAndPrint(i + 1, messages);
-            }
-
-            , intro_wait);
-    },
-    intro: function () {
-//        var messages = ["3", "2", "1", "FIGHT!"];
-//        var self = this;
-//
-//        this.clearAndPrint(0, messages);
-//        this.clearScreen();
-        
-        
-//        var intro_wait = 400;
-//
-//        this.showMessage("3", 350, 200, 100);
-//        this.sleep(intro_wait);
-//        console.debug(new Date().getTime());
-//        this.clearScreen();
-//        
-//        this.showMessage("2", 350, 200, 100);
-//        this.sleep(intro_wait);
-//        console.debug(new Date().getTime());
-//        this.clearScreen();
-//        
-//        this.showMessage("1", 350, 200, 100);
-//        this.sleep(intro_wait);
-//        console.debug(new Date().getTime());
-//        this.clearScreen();
-//        
-//        this.showMessage("FIGHT!", 350, 200, 80);
-//        this.sleep(intro_wait);
-//        console.debug(new Date().getTime());
-//        this.clearScreen();
-
-
+    efectos_de_sonido: {
+        "pause": "sounds/pause.wav"
     },
     crearChara: function () {
 
-        var charaImage = new Image();
-        charaImage.src = "img/player1.png";
+        var imagenChara = new Image();
+        imagenChara.src = "img/player1.png";
         chara = {
-            sx: 0,
-            sy: 0,
+            xImagen: 0,
+            yImagen: 0,
             x: 120,
             y: 117,
-            sheight: 2592,
-            swidth: 1456,
-            height: 384,
-            width: 219,
-            rows: {
+            altoImagen: 2592,
+            anchoImagen: 1456,
+            altoOcupado: 384,
+            anchoOcupado: 219,
+            filasImagen: {
                 "": 0,
-                "standing": 0,
-                "hitting": 1
+                "dePie": 0,
+                "golpeando": 1
             },
-            totalWidth: {
+            anchoTotalImagen: {
                 "": 1456 * 4,
-                "standing": 1456 * 4,
-                "hitting": 1456 * 5
+                "dePie": 1456 * 4,
+                "golpeando": 1456 * 5
             },
-            image: charaImage,
+            imagen: imagenChara,
             status: "",
-            frames: 0
+            ciclos: 0
         };
     },
-    createEnemy: function () {
-        var charaImage = new Image();
-        charaImage.src = "img/player2.png";
-        this.enemy = {
-            sx: 0,
-            sy: 0,
+    crearEnemigo: function () {
+        var imagenChara = new Image();
+        imagenChara.src = "img/player2.png";
+        this.enemigo = {
+            xImagen: 0,
+            yImagen: 0,
             x: 500,
             y: 135,
-            sheight: 2592,
-            swidth: 1456,
-            height: 384,
-            width: 219,
-            rows: {
+            altoImagen: 2592,
+            anchoImagen: 1456,
+            altoOcupado: 384,
+            anchoOcupado: 219,
+            filasImagen: {
                 "": 0,
-                "standing": 0
+                "dePie": 0
             },
-            totalWidth: {
+            anchoTotalImagen: {
                 "": 1456 * 4,
-                "running": 1456 * 4
+                "dePie": 1456 * 4
             },
-            image: charaImage,
+            imagen: imagenChara,
             status: "",
-            frames: 0
+            ciclos: 0
         }
 
     },
-    events: {
+    eventos: {
         13: "pause",
-        32: "hit"
+        32: "golpear"
     }
 });
 var appView = new Juego2();

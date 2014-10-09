@@ -1,50 +1,49 @@
 
 
 var Juego1 = Base.extend({
-    withMusic:false,
-    FRAMES_FOR_SPRITE_CHANGE: 4,
-    music: {
+    conMusica:false,
+    CICLOS_PARA_CAMBIO_DE_SPRITE: 4,
+    musica: {
         url: "sounds/theme.mp3"
     },
-    sound_effects: {
+    efectos_de_sonido: {
         "pause": "sounds/pause.wav",
-        "jump": "sounds/jump.wav"
+        "saltar": "sounds/jump.wav"
     },
     crearChara: function () {
 
-        var charaImage = new Image();
-        console.debug("j1");
-        charaImage.src = "img/sonic.png";
+        var imagenChara = new Image();
+        imagenChara.src = "img/sonic.png";
 
         chara = {
-            sx: 0,
-            sy: 0,
+            xImagen: 0,
+            yImagen: 0,
             x: 120,
             y: 388,
-            sheight: 30,
-            swidth: 24,
-            height: 60,
-            width: 48,
-            rows: {
+            altoImagen: 30,
+            anchoImagen: 24,
+            altoOcupado: 60,
+            anchoOcupado: 48,
+            filasImagen: {
                 "": 0,
-                "standing": 0,
-                "jumping": 1
+                "dePie": 0,
+                "saltando": 1
             },
-            totalWidth: {
+            anchoTotalImagen: {
                 "": 24 * 7,
-                "running": 24 * 7,
-                "jumping": 24
+                "dePie": 24 * 7,
+                "saltando": 24
             },
-            image: charaImage,
+            imagen: imagenChara,
             status: "",
-            frames: 0
+            ciclos: 0
         };
 
     },
     enemies: [],
-    events: {
+    eventos: {
         13: "pause",
-        32: "jump"
+        32: "saltar"
     }
 });
 

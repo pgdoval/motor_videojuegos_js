@@ -3,6 +3,7 @@ var canvas, contexto, chara, estado, timer;
 var JUMP_TOTAL_FRAMES = 60;
 
 var Base = Backbone.View.extend({
+    withMusic: true,
     FRAMES_FOR_SPRITE_CHANGE: 20,
     el: $('#canvas'),
     initialize: function () {
@@ -22,6 +23,9 @@ var Base = Backbone.View.extend({
     createEnemy: function () {
     },
     enemy: null,
+    intro: function (){
+        this.introFinished=true;
+    },
     start: function () {
         var self = this;
         canvas = $('canvas')[0];
@@ -38,28 +42,30 @@ var Base = Backbone.View.extend({
         canvas.style.height = canvas.height.toString() + "px";
 
 
-        this.crearChara();
+        if (this.withMusic)
+        {
+            this.music.object = this.createAudio(this.music.url, "", true);
+            this.music.object.play();
+        }
+        //vamos a querer efectos de sonido siempre
         this.createSoundEffects();
-        this.music.object = this.createAudio(this.music.url, "", true);
+
+        this.intro();
+
+        this.crearChara();
+
         this.createEnemy();
 
         chara.image.onload = function () {
 
             self.drawThing(chara);
         }
+
         if (this.enemy != null)
             this.enemy.image.onload = function () {
                 self.drawThing(self.enemy);
             }
         estado = "play";
-        this.music.object.play();
-
-
-
-
-//    drawHorizontalLine(40);
-
-//    drawThing(chara);
 
         this.lookForEvents();
 
@@ -115,12 +121,14 @@ var Base = Backbone.View.extend({
         {
             estado = "play";
             this.regenSoundEffect("pause");
-            contexto.clearRect(0, 0, canvas.width, canvas.height);
-            this.repaint();
+            this.clearScreen(this.repaint());
             this.music.object.loop = true;
             this.music.object.play();
         }
 
+    },
+    clearScreen: function(){
+        contexto.clearRect(0, 0, canvas.width, canvas.height);
     },
     processJump: function (thing) {
         if (thing.status == "" && estado == "play")
@@ -173,14 +181,19 @@ var Base = Backbone.View.extend({
         );
     },
     update: function () {
+        this.updateThing(chara);
+        if (this.enemy != null)
+            this.updateThing(this.enemy)
+    },
+    updateThing: function (thing) {
         if (estado == "play")
         {
 
-            this.recalcChara();
+            this.recalc(thing);
             if (chara.status != "")
             {
-                this.clearChara();
-                this.paintChara();
+                this.clearThing(thing);
+                this.drawThing(thing);
             }
         }
     },
@@ -192,7 +205,7 @@ var Base = Backbone.View.extend({
         this.drawThing(chara);
     },
     paintEnemy: function () {
-        if (enemy != null)
+        if (this.enemy != null)
             this.drawThing(this.enemy);
     },
     clearChara: function () {
@@ -202,23 +215,23 @@ var Base = Backbone.View.extend({
         if (enemy != null)
             this.clearThing(this.enemy);
     },
-    recalcChara: function () {
+    recalc: function (thing) {
 
-        switch (chara.status)
+        switch (thing.status)
         {
             case "":
             case "standing":
 
-                this.stand(chara);
+                this.stand(thing);
                 break;
 
             case "jumping":
-                this.jump(chara);
+                this.jump(thing);
                 break;
 
             case "hitting":
                 //console.debug(chara);
-                this.hit(chara);
+                this.hit(thing);
                 break;
 
             default:

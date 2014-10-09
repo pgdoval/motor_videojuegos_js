@@ -1,6 +1,7 @@
 
 
 var Juego1 = Base.extend({
+    withMusic:false,
     FRAMES_FOR_SPRITE_CHANGE: 4,
     music: {
         url: "sounds/theme.mp3"

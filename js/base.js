@@ -23,8 +23,8 @@ var Base = Backbone.View.extend({
     createEnemy: function () {
     },
     enemy: null,
-    intro: function (){
-        this.introFinished=true;
+    intro: function () {
+        this.introFinished = true;
     },
     start: function () {
         var self = this;
@@ -127,7 +127,7 @@ var Base = Backbone.View.extend({
         }
 
     },
-    clearScreen: function(){
+    clearScreen: function () {
         contexto.clearRect(0, 0, canvas.width, canvas.height);
     },
     processJump: function (thing) {
@@ -169,14 +169,6 @@ var Base = Backbone.View.extend({
                     return;
             }
 
-//            if (e.which == 13)//enter--pause
-//            {
-//                self.processPause();
-//            }
-//
-//            if (e.which == 32) {
-//                self.processJump();
-//            }
         }
         );
     },

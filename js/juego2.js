@@ -68,7 +68,7 @@ var Juego2 = Base.extend({
     crearChara: function () {
 
         var charaImage = new Image();
-        charaImage.src = "img/rafa1.png";
+        charaImage.src = "img/player1.png";
         chara = {
             sx: 0,
             sy: 0,
@@ -95,7 +95,7 @@ var Juego2 = Base.extend({
     },
     createEnemy: function () {
         var charaImage = new Image();
-        charaImage.src = "img/pablo1.png";
+        charaImage.src = "img/player2.png";
         this.enemy = {
             sx: 0,
             sy: 0,

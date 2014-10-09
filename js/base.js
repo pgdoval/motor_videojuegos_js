@@ -1,11 +1,12 @@
-var canvas, contexto, chara, estado, timer;
+var canvas, contexto, chara, estado;
 
-var JUMP_TOTAL_FRAMES = 60;
 
 var Base = Backbone.View.extend({
     withMusic: true,
-    FRAMES_FOR_SPRITE_CHANGE: 20,
+    FRAMES_FOR_SPRITE_CHANGE: 15,
+    JUMP_TOTAL_FRAMES: 60,
     el: $('#canvas'),
+    enemy: null,
     initialize: function () {
         this.render();
     },
@@ -14,27 +15,11 @@ var Base = Backbone.View.extend({
         this.start();
 
     },
-    drawThing: function (thing) {
-        contexto.drawImage(thing.image, thing.sx, thing.sy, thing.swidth, thing.sheight, thing.x, thing.y, thing.width, thing.height);
-    },
-    clearThing: function (thing) {
-        contexto.clearRect(thing.x, thing.y - 5, thing.width + 1, thing.height + 10);
-    },
-    createEnemy: function () {
-    },
-    enemy: null,
-    intro: function () {
-        this.introFinished = true;
-    },
     start: function () {
         var self = this;
         canvas = $('canvas')[0];
-        console.debug(canvas);
-
-        events = [];
 
         contexto = canvas.getContext("2d");
-
 
         canvas.width = window.innerWidth;
         canvas.height = window.innerHeight;
@@ -50,11 +35,13 @@ var Base = Backbone.View.extend({
         //vamos a querer efectos de sonido siempre
         this.createSoundEffects();
 
+
+
         this.intro();
 
         this.crearChara();
-
         this.createEnemy();
+
 
         chara.image.onload = function () {
 
@@ -65,6 +52,7 @@ var Base = Backbone.View.extend({
             this.enemy.image.onload = function () {
                 self.drawThing(self.enemy);
             }
+
         estado = "play";
 
         this.lookForEvents();
@@ -73,12 +61,10 @@ var Base = Backbone.View.extend({
         timer.start();
 
     },
-    playable_sound_effects: {},
-    createSoundEffects: function () {
+    //Funciones de audio
 
-        for (var effect in this.sound_effects)
-            this.playable_sound_effects[effect] = this.createAudio(this.sound_effects[effect], effect, false);
-    },
+
+
     createAudio: function (url, name, loopable) {
         var audio = document.createElement('audio');
         //console.log('cargando "' + src + '"');
@@ -87,65 +73,87 @@ var Base = Backbone.View.extend({
         audio.loop = loopable;
         return audio;
     },
-    showMessage: function (message, x, y, size) {
-        contexto.font = size + "px Arial";
-        var gradient = contexto.createLinearGradient(0, 0, canvas.width, 0);
-        gradient.addColorStop("0", "magenta");
-        gradient.addColorStop("0.5", "blue");
-        gradient.addColorStop("1.0", "red");
-// Fill with gradient
-        contexto.fillStyle = gradient;
-        contexto.fillText(message, x, y);
-
-
+    playable_sound_effects: {},
+    createSoundEffects: function () {
+        for (var effect in this.sound_effects)
+            this.playable_sound_effects[effect] = this.createAudio(this.sound_effects[effect], effect, false);
     },
     playSoundEffect: function (sound) {
         var effect = this.playable_sound_effects[sound];
-//    effect.loop=false;
-        console.debug(effect);
         effect.play();
     },
     regenSoundEffect: function (sound) {
         this.playable_sound_effects[sound] = this.createAudio(this.sound_effects[sound], sound, false);
     },
-    processPause: function () {
-        if (estado == "play")
-        {
-            estado = "pause";
-            this.playSoundEffect("pause");
-            this.showMessage("PAUSE", 300, 250, 50);
-            this.music.object.pause();
+    //Vacías por defecto
 
-        }
-        else
-        {
-            estado = "play";
-            this.regenSoundEffect("pause");
-            this.clearScreen(this.repaint());
-            this.music.object.loop = true;
-            this.music.object.play();
-        }
 
+    intro: function () {
+
+    },
+    createEnemy: function () {
+
+    },
+    //Pintar y borrar del canvas
+
+
+
+    drawThing: function (thing) {
+        contexto.drawImage(thing.image, thing.sx, thing.sy, thing.swidth, thing.sheight, thing.x, thing.y, thing.width, thing.height);
+    },
+    clearThing: function (thing) {
+        contexto.clearRect(thing.x, thing.y - 2, thing.width, thing.height + 4);
     },
     clearScreen: function () {
         contexto.clearRect(0, 0, canvas.width, canvas.height);
     },
-    processJump: function (thing) {
-        if (thing.status == "" && estado == "play")
-        {
-            thing.status = "jumping";
-            thing.frames = 1;
-        }
+    //Funciones cómodas que pintan en base a las anteriores
 
-    },
-    processHit: function (thing) {
 
-        if (thing.status == "" && estado == "play")
+
+    repaint: function () {
+        this.paintChara();
+        this.paintEnemy();
+    },
+    paintChara: function () {
+        this.drawThing(chara);
+    },
+    paintEnemy: function () {
+        if (this.enemy != null)
+            this.drawThing(this.enemy);
+    },
+    clearChara: function () {
+        this.clearThing(chara);
+    },
+    clearEnemy: function () {
+        if (this.enemy != null)
+            this.clearThing(this.enemy);
+    },
+    //La función que se llama cada pocos milisegundos
+
+
+
+    update: function () {
+        this.updateThing(chara);
+        if (this.enemy != null)
+            this.updateThing(this.enemy);
+    },
+    updateThing: function (thing) {
+        if (estado == "play")
         {
-            thing.status = "hitting";
-            thing.frames = 1;
+
+            this.recalc(thing);
+            if (chara.status != "")
+            {
+                this.clearThing(thing);
+                this.drawThing(thing);
+            }
         }
     },
+    //Asignar los controles
+
+
+
     lookForEvents: function () {
         var self = this;
         $(document).on('keyup', function (e) {
@@ -153,7 +161,8 @@ var Base = Backbone.View.extend({
 
             //obtenemos la función a ejecutar
             var fn = self.events[e.which];
-            //esto con require lo podríamos encapsular mejor
+
+            //esto con objetos para los lo podríamos encapsular mejor
             switch (fn)
             {
                 case "pause":
@@ -172,40 +181,55 @@ var Base = Backbone.View.extend({
         }
         );
     },
-    update: function () {
-        this.updateThing(chara);
-        if (this.enemy != null)
-            this.updateThing(this.enemy)
-    },
-    updateThing: function (thing) {
+    processPause: function () {
         if (estado == "play")
         {
+            estado = "pause";
+            this.playSoundEffect("pause");
+            this.showMessage("PAUSE", 300, 250, 50);
+            this.music.object.pause();
 
-            this.recalc(thing);
-            if (chara.status != "")
-            {
-                this.clearThing(thing);
-                this.drawThing(thing);
-            }
         }
+        else
+        {
+            estado = "play";
+            this.regenSoundEffect("pause");
+
+            this.clearScreen();
+            this.repaint();
+
+            this.music.object.loop = true;
+            this.music.object.play();
+        }
+
     },
-    repaint: function () {
-        this.paintChara();
-        this.paintEnemy();
+    showMessage: function (message, x, y, size) {
+        contexto.font = size + "px Arial";
+        var gradient = contexto.createLinearGradient(0, 0, canvas.width, 0);
+        gradient.addColorStop("0", "magenta");
+        gradient.addColorStop("0.5", "blue");
+        gradient.addColorStop("1.0", "red");
+
+        contexto.fillStyle = gradient;
+        contexto.fillText(message, x, y);
+
+
     },
-    paintChara: function () {
-        this.drawThing(chara);
+    processJump: function (thing) {
+        if (thing.status == "" && estado == "play")
+        {
+            thing.status = "jumping";
+            thing.frames = 1;
+        }
+
     },
-    paintEnemy: function () {
-        if (this.enemy != null)
-            this.drawThing(this.enemy);
-    },
-    clearChara: function () {
-        this.clearThing(chara);
-    },
-    clearEnemy: function () {
-        if (enemy != null)
-            this.clearThing(this.enemy);
+    processHit: function (thing) {
+
+        if (thing.status == "" && estado == "play")
+        {
+            thing.status = "hitting";
+            thing.frames = 1;
+        }
     },
     recalc: function (thing) {
 
@@ -246,8 +270,38 @@ var Base = Backbone.View.extend({
             thing.frames += 1;
         }
     },
+    jump: function (thing) {
+
+        if (thing.frames == 1)
+            this.playSoundEffect("jump");
+        thing.sx = 0;
+        if (thing.frames <= this.JUMP_TOTAL_FRAMES / 2)
+        {
+            thing.y -= 2;
+        }
+        else
+        {
+            if (thing.frames <= this.JUMP_TOTAL_FRAMES)
+            {
+                thing.y += 2;
+            }
+        }
+        if (thing.frames == this.JUMP_TOTAL_FRAMES)
+        {
+            thing.status = "";
+            thing.frames = 1;
+            this.regenSoundEffect("jump");
+        }
+        else
+        {
+            thing.frames++;
+        }
+    },
     hit: function (thing) {
-        //console.debug(thing);
+        
+//        if(thing.frames==1)
+//            thing.sx = 0;
+//        //console.debug(thing);
         if (thing.frames == this.FRAMES_FOR_HIT_SPRITE_CHANGE)
         {
             thing.sx = (thing.sx + thing.swidth) % thing.totalWidth[thing.status];
@@ -264,37 +318,13 @@ var Base = Backbone.View.extend({
             thing.status = "";
             thing.frames = 0;
         }
-    },
-    jump: function (thing) {
 
-        if (thing.frames == 1)
-            this.playSoundEffect("jump");
-        thing.sx = 0;
-        if (thing.frames <= JUMP_TOTAL_FRAMES / 2)
-        {
-            thing.y -= 2;
-        }
-        else
-        {
-            if (thing.frames <= JUMP_TOTAL_FRAMES)
-            {
-                thing.y += 2;
-            }
-        }
-        if (thing.frames == JUMP_TOTAL_FRAMES)
-        {
-            thing.status = "";
-            thing.frames = 1;
-            this.regenSoundEffect("jump");
-        }
-        else
-        {
-            thing.frames++;
-        }
-
-
-
-
+    
+    
+    
+    
+    
+    
     },
     Timer: function (update, rate, thisArg) {
 

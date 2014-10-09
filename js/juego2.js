@@ -1,7 +1,7 @@
 
 
 var Juego2 = Base.extend({
-    FRAMES_FOR_HIT_SPRITE_CHANGE: 10,
+    FRAMES_FOR_HIT_SPRITE_CHANGE: 8,
     HIT_SPRITE_LENGTH: 5,
     music: {
         url: "sounds/theme.wav"

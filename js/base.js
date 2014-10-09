@@ -6,6 +6,7 @@ var Base = Backbone.View.extend({
     FRAMES_FOR_SPRITE_CHANGE: 15,
     JUMP_TOTAL_FRAMES: 60,
     el: $('#canvas'),
+    
     enemy: null,
     initialize: function () {
         this.render();
@@ -299,10 +300,10 @@ var Base = Backbone.View.extend({
     },
     hit: function (thing) {
         
-//        if(thing.frames==1)
-//            thing.sx = 0;
+        if(thing.frames==1)
+            thing.sx = 0;
 //        //console.debug(thing);
-        if (thing.frames == this.FRAMES_FOR_HIT_SPRITE_CHANGE)
+        if (thing.frames % this.FRAMES_FOR_HIT_SPRITE_CHANGE == 0)
         {
             thing.sx = (thing.sx + thing.swidth) % thing.totalWidth[thing.status];
             thing.status = "hitting";
@@ -317,6 +318,7 @@ var Base = Backbone.View.extend({
         {
             thing.status = "";
             thing.frames = 0;
+            thing.sx=0;
         }
 
     

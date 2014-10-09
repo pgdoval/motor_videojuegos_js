@@ -1,7 +1,13 @@
 
 
 var Juego1 = Base.extend({
-
+    music: {
+        url: "sounds/theme.mp3"
+    },
+    sound_effects: {
+        "pause": "sounds/pause.wav",
+        "jump": "sounds/jump.wav"
+    },
 crearChara: function() {
 
     var charaImage = new Image();
@@ -19,7 +25,7 @@ crearChara: function() {
         width: 48,
         rows: {
             "": 0,
-            "running": 0,
+            "standing": 0,
             "jumping": 1
         },
         totalWidth: {
@@ -32,8 +38,11 @@ crearChara: function() {
         frames: 0
     };
 
-}
-
+},
+    events: {
+        13: "pause",
+        32: "jump"
+    }
 });
 
 var appView = new Juego1();

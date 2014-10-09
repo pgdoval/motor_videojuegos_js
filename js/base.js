@@ -63,13 +63,6 @@ var Base = Backbone.View.extend({
         timer.start();
 
     },
-    music: {
-        url: "sounds/theme.mp3"
-    },
-    sound_effects: {
-        "pause": "sounds/pause.wav",
-        "jump": "sounds/jump.wav"
-    },
     playable_sound_effects: {},
     createSoundEffects: function () {
 
@@ -105,42 +98,62 @@ var Base = Backbone.View.extend({
     regenSoundEffect: function (sound) {
         this.playable_sound_effects[sound] = this.createAudio(this.sound_effects[sound], sound, false);
     },
+    processPause: function () {
+        if (estado == "play")
+        {
+            estado = "pause";
+            this.playSoundEffect("pause");
+            this.showMessage("PAUSE", 300, 250, 50);
+            this.music.object.pause();
+
+        }
+        else
+        {
+            estado = "play";
+            this.regenSoundEffect("pause");
+            contexto.clearRect(0, 0, canvas.width, canvas.height);
+            this.repaint();
+            this.music.object.loop = true;
+            this.music.object.play();
+        }
+
+    },
+    processJump: function () {
+        if (chara.status == "" && estado == "play")
+        {
+            chara.status = "jumping";
+            chara.frames = 1;
+        }
+
+    },
     lookForEvents: function () {
         var self = this;
         $(document).on('keyup', function (e) {
             e.preventDefault();
 
-            if (e.which == 13)//enter--pause
+            //obtenemos la función a ejecutar
+            var fn = self.events[e.which];
+            //esto con require lo podríamos encapsular mejor
+            switch (fn)
             {
-                if (estado == "play")
-                {
-                    estado = "pause";
-                    self.playSoundEffect("pause");
-                    self.showMessage("PAUSE", 300, 250, 50);
-                    self.music.object.pause();
-
-                }
-                else
-                {
-                    estado = "play";
-                    self.regenSoundEffect("pause");
-                    contexto.clearRect(0, 0, canvas.width, canvas.height);
-                    self.repaint();
-                    self.music.object.loop = true;
-                    self.music.object.play();
-                }
+                case "pause":
+                    self.processPause();
+                    break;
+                case "jump":
+                    self.processJump();
+                    break;
+                default:
+                    return;
             }
 
-            if (chara.status == "" && estado == "play")
-            {
-
-                if (e.which == 32) {
-
-                    chara.status = "jumping";
-                    chara.frames = 1;
-
-                }
-            }
+//            if (e.which == 13)//enter--pause
+//            {
+//                self.processPause();
+//            }
+//
+//            if (e.which == 32) {
+//                self.processJump();
+//            }
         }
         );
     },
@@ -169,9 +182,9 @@ var Base = Backbone.View.extend({
         switch (chara.status)
         {
             case "":
-            case "running":
+            case "standing":
 
-                this.run(chara);
+                this.stand(chara);
                 break;
 
             case "jumping":
@@ -185,11 +198,11 @@ var Base = Backbone.View.extend({
         }
         chara.sy = chara.rows[chara.status] * chara.sheight;
     },
-    run: function (thing) {
+    stand: function (thing) {
         if (thing.frames == FRAMES_FOR_SPRITE_CHANGE)
         {
             thing.sx = (thing.sx + thing.swidth) % thing.totalWidth[thing.status];
-            thing.status = "running";
+            thing.status = "standing";
             thing.frames = 0;
         }
         else

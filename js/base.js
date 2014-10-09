@@ -1,9 +1,9 @@
 var canvas, contexto, chara, estado, timer;
 
 var JUMP_TOTAL_FRAMES = 60;
-var FRAMES_FOR_SPRITE_CHANGE = 4;
 
 var Base = Backbone.View.extend({
+    FRAMES_FOR_SPRITE_CHANGE: 20,
     el: $('#canvas'),
     initialize: function () {
         this.render();
@@ -19,6 +19,9 @@ var Base = Backbone.View.extend({
     clearThing: function (thing) {
         contexto.clearRect(thing.x, thing.y - 5, thing.width + 1, thing.height + 10);
     },
+    createEnemy: function () {
+    },
+    enemy: null,
     start: function () {
         var self = this;
         canvas = $('canvas')[0];
@@ -38,18 +41,19 @@ var Base = Backbone.View.extend({
         this.crearChara();
         this.createSoundEffects();
         this.music.object = this.createAudio(this.music.url, "", true);
+        this.createEnemy();
 
         chara.image.onload = function () {
 
             self.drawThing(chara);
         }
-
+        if (this.enemy != null)
+            this.enemy.image.onload = function () {
+                self.drawThing(self.enemy);
+            }
         estado = "play";
         this.music.object.play();
 
-//    background.image.onload = function () {
-//        drawThing(background);
-//    }
 
 
 
@@ -118,13 +122,21 @@ var Base = Backbone.View.extend({
         }
 
     },
-    processJump: function () {
-        if (chara.status == "" && estado == "play")
+    processJump: function (thing) {
+        if (thing.status == "" && estado == "play")
         {
-            chara.status = "jumping";
-            chara.frames = 1;
+            thing.status = "jumping";
+            thing.frames = 1;
         }
 
+    },
+    processHit: function (thing) {
+
+        if (thing.status == "" && estado == "play")
+        {
+            thing.status = "hitting";
+            thing.frames = 1;
+        }
     },
     lookForEvents: function () {
         var self = this;
@@ -140,7 +152,10 @@ var Base = Backbone.View.extend({
                     self.processPause();
                     break;
                 case "jump":
-                    self.processJump();
+                    self.processJump(chara);
+                    break;
+                case "hit":
+                    self.processHit(chara);
                     break;
                 default:
                     return;
@@ -171,14 +186,24 @@ var Base = Backbone.View.extend({
     },
     repaint: function () {
         this.paintChara();
+        this.paintEnemy();
     },
     paintChara: function () {
         this.drawThing(chara);
     },
+    paintEnemy: function () {
+        if (enemy != null)
+            this.drawThing(this.enemy);
+    },
     clearChara: function () {
         this.clearThing(chara);
     },
+    clearEnemy: function () {
+        if (enemy != null)
+            this.clearThing(this.enemy);
+    },
     recalcChara: function () {
+
         switch (chara.status)
         {
             case "":
@@ -191,6 +216,11 @@ var Base = Backbone.View.extend({
                 this.jump(chara);
                 break;
 
+            case "hitting":
+                //console.debug(chara);
+                this.hit(chara);
+                break;
+
             default:
                 return;
 
@@ -199,7 +229,7 @@ var Base = Backbone.View.extend({
         chara.sy = chara.rows[chara.status] * chara.sheight;
     },
     stand: function (thing) {
-        if (thing.frames == FRAMES_FOR_SPRITE_CHANGE)
+        if (thing.frames == this.FRAMES_FOR_SPRITE_CHANGE)
         {
             thing.sx = (thing.sx + thing.swidth) % thing.totalWidth[thing.status];
             thing.status = "standing";
@@ -209,6 +239,25 @@ var Base = Backbone.View.extend({
         {
             thing.status = "";
             thing.frames += 1;
+        }
+    },
+    hit: function (thing) {
+        //console.debug(thing);
+        if (thing.frames == this.FRAMES_FOR_HIT_SPRITE_CHANGE)
+        {
+            thing.sx = (thing.sx + thing.swidth) % thing.totalWidth[thing.status];
+            thing.status = "hitting";
+            thing.frames += 1;
+        }
+        else
+        {
+            thing.status = "hitting";
+            thing.frames += 1;
+        }
+        if (thing.frames == this.FRAMES_FOR_HIT_SPRITE_CHANGE * this.HIT_SPRITE_LENGTH)
+        {
+            thing.status = "";
+            thing.frames = 0;
         }
     },
     jump: function (thing) {

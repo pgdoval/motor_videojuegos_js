@@ -1,25 +1,8 @@
 
 
 var Juego1 = Base.extend({
-});
 
-var appView = new Juego1();
-
-function start() {
-    contexto = canvas.getContext("2d");
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-    
-    crearChara();
-    
-    chara.image.onload = function () {
-        drawThing(chara);
-    }
-
-    estado = "play";
-}
-
-function crearChara() {
+crearChara: function() {
 
     var charaImage = new Image();
 
@@ -50,5 +33,11 @@ function crearChara() {
     };
 
 }
+
+});
+
+var appView = new Juego1();
+
+
 
 

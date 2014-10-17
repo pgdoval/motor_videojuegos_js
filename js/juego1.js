@@ -1,4 +1,9 @@
-
+define([
+  'jquery',
+  'underscore',
+  'backbone',
+  'base'
+], function($, _, Backbone,Base){
 
 var Juego1 = Base.extend({
     conMusica:false,
@@ -15,7 +20,7 @@ var Juego1 = Base.extend({
         var imagenChara = new Image();
         imagenChara.src = "img/sonic.png";
 
-        chara = {
+        this.chara = {
             xImagen: 0,
             yImagen: 0,
             x: 120,
@@ -47,8 +52,8 @@ var Juego1 = Base.extend({
     }
 });
 
-var appView = new Juego1();
+return Juego1;
 
-
+});
 
 

@@ -1,3 +1,9 @@
+define([
+  'jquery',
+  'underscore',
+  'backbone',
+  'base'
+], function($, _, Backbone,Base){
 
 
 var Juego2 = Base.extend({
@@ -13,7 +19,7 @@ var Juego2 = Base.extend({
 
         var imagenChara = new Image();
         imagenChara.src = "img/player1.png";
-        chara = {
+        this.chara = {
             xImagen: 0,
             yImagen: 0,
             x: 120,
@@ -68,8 +74,10 @@ var Juego2 = Base.extend({
         32: "golpear"
     }
 });
-var appView = new Juego2();
 
+return Juego2;
+
+});
 
 
 

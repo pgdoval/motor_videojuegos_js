@@ -16,18 +16,18 @@ define([
         el: $('#canvas'),
         contextManager: null,
         enemigo: null,
-        initialize: function () {
+        init: function () {
             this.render();
+            
         },
         render: function () {
             this.canvas = this.$el[0];
             this.start();
+            
 
         },
         start: function () {
             var self = this;
-
-
 
 
             this.canvas.width = window.innerWidth;

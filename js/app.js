@@ -4,11 +4,13 @@ define([
   'backbone',
   'juego1' // Cogemos el juego que queremos
 ], function($, _, Backbone, Juego){
-  var initialize = function(){
-    new Juego().initialize();
+  var init= function(){
+
+    new Juego().init();
   };
 
   return { 
-    initialize: initialize
+      
+    init: init
   };
 });

@@ -25,6 +25,7 @@ require([
   'app',
 
 ], function(App){
-
-  App.initialize();
+            console.debug(this);
+            
+  App.init();
 });

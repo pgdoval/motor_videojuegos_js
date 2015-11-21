@@ -2,8 +2,9 @@ define([
     'jquery',
     'underscore',
     'backbone',
-    'base'
-], function ($, _, Backbone, Base) {
+    'juegos/base',
+    'charas/chara'
+], function ($, _, Backbone, Base, Chara) {
 
     var Juego1 = Base.extend({
         conMusica: false,
@@ -18,9 +19,9 @@ define([
         crearChara: function () {
 
             var imagenChara = new Image();
-            imagenChara.src = "img/sonic.png";
+            imagenChara.src = "../img/sonic.png";
 
-            this.chara = {
+            this.chara = new Chara({
                 xImagen: 0,
                 yImagen: 0,
                 x: 120,
@@ -42,7 +43,7 @@ define([
                 imagen: imagenChara,
                 status: "",
                 ciclos: 0
-            };
+            });
 
         },
         enemies: [],

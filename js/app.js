@@ -1,16 +1,16 @@
 define([
-  'jquery', 
-  'underscore', 
-  'backbone',
-  'juego1' // Cogemos el juego que queremos
-], function($, _, Backbone, Juego){
-  var init= function(){
+    'jquery',
+    'underscore',
+    'backbone',
+    'juegos/juego2' // Cogemos el juego que queremos
+], function ($, _, Backbone, Juego) {
+    var init = function () {
 
-    new Juego().init();
-  };
+        var j = new Juego();
+        j.init();
+    };
 
-  return { 
-      
-    init: init
-  };
+    return {
+        init: init
+    };
 });

@@ -22,12 +22,12 @@ var Juego2 = Base.extend({
         this.chara = {
             xImagen: 0,
             yImagen: 0,
-            x: 120,
-            y: 117,
+            x: 300,
+            y: 217,
             altoImagen: 2592,
             anchoImagen: 1456,
-            altoOcupado: 384,
-            anchoOcupado: 219,
+            altoOcupado: 768,
+            anchoOcupado: 438,
             filasImagen: {
                 "": 0,
                 "dePie": 0,
@@ -49,12 +49,12 @@ var Juego2 = Base.extend({
         this.enemigo = {
             xImagen: 0,
             yImagen: 0,
-            x: 500,
-            y: 135,
+            x: 800,
+            y: 245,
             altoImagen: 2592,
             anchoImagen: 1456,
-            altoOcupado: 384,
-            anchoOcupado: 219,
+            altoOcupado: 768,
+            anchoOcupado: 438,
             filasImagen: {
                 "": 0,
                 "dePie": 0

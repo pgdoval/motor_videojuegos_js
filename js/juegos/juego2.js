@@ -2,7 +2,7 @@ define([
   'jquery',
   'underscore',
   'backbone',
-  'base'
+  'juegos/base'
 ], function($, _, Backbone,Base){
 
 

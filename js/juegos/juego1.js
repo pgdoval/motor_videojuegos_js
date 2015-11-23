@@ -19,9 +19,9 @@ define([
         crearChara: function () {
 
             var imagenChara = new Image();
-            imagenChara.src = "../img/sonic.png";
+            imagenChara.src = "img/sonic.png";
 
-            this.chara = new Chara({
+            this.chara = {
                 xImagen: 0,
                 yImagen: 0,
                 x: 120,
@@ -43,7 +43,7 @@ define([
                 imagen: imagenChara,
                 status: "",
                 ciclos: 0
-            });
+            };
 
         },
         enemies: [],

@@ -10,11 +10,14 @@ define([
         conMusica: false,
         CICLOS_PARA_CAMBIO_DE_SPRITE: 4,
         musica: {
-            url: "sounds/theme.mp3"
+            url: "sounds/theme.wav"
         },
         efectos_de_sonido: {
             "pause": "sounds/pause.wav",
             "saltar": "sounds/jump.wav"
+        },
+        escenario: {
+            "url":  "img/mario_bg.jpg"
         },
         crearChara: function () {
 

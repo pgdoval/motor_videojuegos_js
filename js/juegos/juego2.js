@@ -15,6 +15,9 @@ var Juego2 = Base.extend({
     efectos_de_sonido: {
         "pause": "sounds/pause.wav"
     },
+    escenario: {
+        "url":   "img/02.gif"
+    },
     crearChara: function () {
 
         var imagenChara = new Image();

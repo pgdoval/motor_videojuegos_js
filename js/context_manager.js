@@ -28,9 +28,9 @@ define([
         mostrarMensaje: function (mensaje, x, y, tamanoLetra) {
             this.contexto.font = tamanoLetra + "px Arial";
             var gradient = this.contexto.createLinearGradient(0, 0, this.canvas.width, 0);
-            gradient.addColorStop("0", "magenta");
-            gradient.addColorStop("0.5", "blue");
-            gradient.addColorStop("1.0", "red");
+            gradient.addColorStop("1.0", "white");
+//            gradient.addColorStop("1.0", "blue");
+//            gradient.addColorStop("1.0", "red");
 
             this.contexto.fillStyle = gradient;
             this.contexto.fillText(mensaje, x, y);

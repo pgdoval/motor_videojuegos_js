@@ -52,7 +52,7 @@ define([
 
             this.crearChara();
             this.crearEnemigo();
-
+            this.crearEscenario();
 
             this.chara.imagen.onload = function () {
                 self.contextManager.dibujar(self.chara);
@@ -94,6 +94,13 @@ define([
         },
         regenerarEfectoDeSonido: function (sound) {
             this.elementos_de_efectos_de_sonido[sound] = this.crearElementoDeAudio(this.efectos_de_sonido[sound], sound, false);
+        },
+        //Generales
+        crearEscenario: function () {
+            $("#container").css({
+                "background-image":"url("+this.escenario.url+")",
+                "background-size":"100% 100%"
+            });
         },
         //Vacías por defecto
 
@@ -174,7 +181,7 @@ define([
             {
                 this.estado = "pause";
                 this.reproducirEfectoDeSonido("pause");
-                this.contextManager.mostrarMensaje("PAUSE", 300, 250, 50);
+                this.contextManager.mostrarMensaje("PAUSE", 700, 500, 100);
                 this.musica.elemento.pause();
 
             }
